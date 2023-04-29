@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import Navbar from './Navbar';
+import Alert from './Alert';
 // import translate from '@vitalets/google-translate-api';
 
 
@@ -44,7 +46,7 @@ export default function TextForm(props) {
 
 
 
-
+  const [mode, setmode] = useState('light')
   const [myStyle, setmystyle] = useState({
     color: 'black',
     backgroundColor: 'white'
@@ -68,11 +70,36 @@ export default function TextForm(props) {
     }
    
 }
- 
+const [alert, setAlert] = useState(null)
+const showAlert = (message, type) => {
+  setAlert({
+    msg: message,
+    type: type
+  })
+}
+
+setTimeout(() => {
+  setAlert(null)
+}, 3000);
+
+const togglemode = () => {
+    if (mode === 'light') {
+      setmode('dark')
+      document.body.style.backgroundColor = '#113a62'
+      showAlert("Dark mode has been enable", "success");
+    } else {
+      setmode('light')
+      document.body.style.backgroundColor = 'white'
+      showAlert("Light mode has been enable", "success");
+    }
+  }
 
   return (
     <>
-      <div className='container' style={myStyle}>
+  
+    <Navbar title="TextUtils" aboutText="About TextUtils" mode={mode} togglemode={togglemode}/>
+    <Alert alert={alert} />
+      <div className='container my-2' style={myStyle}>
         <h2 >{props.Heading}</h2>
         <div className="mb-3" >
           <textarea className="form-control" style={myStyle} value={text}  onChange={handleOnchange} rows={8} defaultValue={""} />
@@ -85,9 +112,9 @@ export default function TextForm(props) {
 
         {/* <button className='btn btn-primary' onClick={handleClickbold}>Convert to Bold </button> */}
       </div>
-      <div className='container my-3' style={myStyle}>
+      <div className='container my-2' style={myStyle}>
         <h2>Your Text Summary</h2>
-        <p>{text.split(" ").length} Words and {text.length} characters </p>
+        <p>{text.split(" ").filter((element)=>{return element.length!=0}).length} Words and {text.length} characters </p>
         <p>{0.008 * text.split(" ").length} Minutes read</p>
         <h2>Preview</h2>
         <p>{text.length>0?text:"Enter something in the textbox about  preview it here"}</p>
@@ -95,3 +122,4 @@ export default function TextForm(props) {
     </>
   )
 }
+
